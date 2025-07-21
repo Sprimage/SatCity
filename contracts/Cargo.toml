@@ -1,0 +1,49 @@
+[package]
+name = "sat-city-contracts"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[workspace]
+members = ["alkanes/*"]
+resolver = "2"
+
+[workspace.dependencies]
+# Alkanes & Metashrew
+alkanes-runtime = { git = "https://github.com/kungfuflex/alkanes-rs" }
+alkanes-support = { git = "https://github.com/kungfuflex/alkanes-rs" }
+alkanes-macros = { git = "https://github.com/kungfuflex/alkanes-rs" }
+metashrew-support = { git = "https://github.com/sandshrewmetaprotocols/metashrew" }
+metashrew-core = { git = "https://github.com/sandshrewmetaprotocols/metashrew" }
+protorune = { git = "https://github.com/kungfuflex/alkanes-rs" }
+alkanes = { git = "https://github.com/kungfuflex/alkanes-rs" }
+
+
+# Bitcoin & Crypto
+bitcoin = { version = "0.31.1", features = ["serde"] }
+secp256k1 = { version = "0.28.0", features = ["recovery", "global-context"] }
+
+# Utilities
+anyhow = "1.0.75"
+hex = "0.4.3"
+hex_lit = "0.1.1"
+wasm-bindgen = "0.2.100"
+wasm-bindgen-test = "0.3.49"
+
+
+[dependencies]
+alkanes-runtime = { workspace = true }
+alkanes-support = { workspace = true }
+anyhow = { workspace = true }
+bitcoin = { workspace = true }
+hex = { workspace = true }
+
+[dev-dependencies]
+alkanes = { workspace = true, features = ["test-utils"] }
+metashrew-core = { workspace = true, features = ["test-utils"] }
+protorune = { workspace = true, features = ["test-utils"] }
+wasm-bindgen = { workspace = true }
+wasm-bindgen-test = { workspace = true }
+hex_lit = { workspace = true }

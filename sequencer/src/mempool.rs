@@ -1,11 +1,14 @@
 use std::collections::VecDeque;
+use crate::state::{AlkaneId};
+use ethnum::U256;
+
 
 #[derive(Clone, Debug)]
 pub enum Transaction {
     #[allow(dead_code)]
-    TransferChips { from: [u8; 32], to: [u8; 32], amount: u128 },
+    TransferChips { from: AlkaneId, to: AlkaneId, amount: U256 },
     #[allow(dead_code)]
-    TransferNft { from: [u8; 32], to: [u8; 32], nft_id: u128 },
+    TransferNft { from: AlkaneId, to: AlkaneId, nft_id: U256 },
 }
 
 pub struct Mempool {

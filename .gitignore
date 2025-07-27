@@ -1,2 +1,4 @@
 contracts/target
 sequencer/target
+circuits/target
+references

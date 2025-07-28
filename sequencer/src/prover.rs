@@ -1,10 +1,9 @@
 use crate::mempool::Transaction;
 use crate::state::State;
-use crate::helpers::{encode_players, encode_txs,  encode_nfts};
+use crate::helpers::{encode_players, encode_txs,  encode_nfts, decode_players, decode_nfts};
 use cairo1_run::error::Error;
 use cairo1_run::{cairo_run_program, Cairo1RunConfig, FuncArg };
 use cairo_vm::types::layout_name::LayoutName;
-use cairo_vm::types::relocatable::MaybeRelocatable;
 use cairo_vm::Felt252;
 use cairo_lang_sierra::{
     program::{Program as SierraProgram}
@@ -69,12 +68,28 @@ impl Prover {
 
         match cairo_run_program(&self.sierra_program, cairo_run_config) {
             Ok((_runner, ret, _serial)) => {
-                let lo = as_felt(&ret[0]).to_bytes_le();
-                let hi = as_felt(&ret[1]).to_bytes_le();
-                let mut root = [0u8; 32];
-                root[..16].copy_from_slice(&lo[..16]);
-                root[16..].copy_from_slice(&hi[..16]);
-                Ok(root)
+                let mut it = ret.iter();
+                it.next();
+
+                println!("return {:?}", it);
+                let players_out = decode_players(&mut it);
+                let nfts_out    = decode_nfts(&mut it);
+
+                let mut new_state = State::new();
+                for p in players_out { new_state.upsert_player(p); }
+                for n in nfts_out   { new_state.upsert_nft(n);     }
+                new_state.commit();                       // seals the Merkle tree
+                let new_root = new_state
+                    .root()
+                    .expect("new state must have a root");
+
+                /* ---------------------------------------------------
+                * 5.  Debug print – BEFORE vs AFTER
+                * ------------------------------------------------ */
+                //println!("--- OLD STATE ---\n{state:#?}");
+                //println!("--- NEW STATE ---\n{new_state:#?}");
+
+                Ok(new_root)
             }
 
             Err(Error::RunPanic(panic_data)) => {
@@ -102,9 +117,3 @@ impl Prover {
     }
 }
 
-fn as_felt(value: &MaybeRelocatable) -> Felt252 {
-    match value {
-        MaybeRelocatable::Int(f) => *f,
-        _ => panic!("expected an integer felt, got relocatable"),
-    }
-}

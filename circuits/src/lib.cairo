@@ -16,7 +16,7 @@ struct OrbitalNFT {
     owner: AlkaneId,
 }
 
-#[derive(Drop)]
+#[derive(Drop, Serde)]
 struct GameState {
     players: Array<Player>,
     nfts:    Array<OrbitalNFT>,
@@ -147,7 +147,6 @@ fn main(raw : Array<felt252>) -> Array<felt252> {
     let root_high: u128 = new_state.nfts.len().into();
 
     let mut out: Array<felt252> = array![];
-    root_low.serialize(ref out); 
-    root_high.serialize(ref out);
+    new_state.serialize(ref out); 
     out
 }

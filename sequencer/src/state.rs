@@ -29,6 +29,7 @@ pub struct OrbitalNft {
     pub owner: AlkaneId,
 }
 
+#[derive(Clone)]
 pub struct State {
     tree:    MerkleTree<Sha256>,
     players: HashMap<AlkaneId, Player>,

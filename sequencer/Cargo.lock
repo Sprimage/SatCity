@@ -2655,6 +2655,7 @@ dependencies = [
  "cairo1-run",
  "ethnum",
  "hex",
+ "num-traits",
  "reqwest",
  "rs_merkle",
  "serde",

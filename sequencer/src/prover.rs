@@ -1,4 +1,5 @@
 use crate::mempool::Transaction;
+use std::path::Path;
 use crate::state::State;
 use crate::helpers::{encode_players, encode_txs,  encode_nfts, decode_players, decode_nfts};
 use cairo1_run::error::Error;
@@ -8,7 +9,26 @@ use cairo_vm::Felt252;
 use cairo_lang_sierra::{
     program::{Program as SierraProgram}
 };
+use stwo_cairo_prover::stwo_prover::core::vcs::blake2_merkle::{
+    Blake2sMerkleChannel, Blake2sMerkleHasher,
+};
+use cairo_air::utils::{ProofFormat, serialize_proof_to_file};
+use cairo_prove::prove::{prove, prover_input_from_runner};
+use stwo_cairo_prover::stwo_prover::core::fri::FriConfig;
+use stwo_cairo_prover::stwo_prover::core::pcs::PcsConfig;
 
+
+
+fn secure_pcs_config() -> PcsConfig {
+    PcsConfig {
+        pow_bits: 26,
+        fri_config: FriConfig {
+            log_last_layer_degree_bound: 0,
+            log_blowup_factor: 1,
+            n_queries: 70,
+        },
+    }
+}
 
 pub struct Prover {
     sierra_program: SierraProgram,
@@ -68,6 +88,18 @@ impl Prover {
 
         match cairo_run_program(&self.sierra_program, cairo_run_config) {
             Ok((_runner, ret, _serial)) => {
+
+                let prover_input = prover_input_from_runner(&_runner);
+                let pcs_config: PcsConfig = secure_pcs_config();
+
+                let cairo_proof = prove(prover_input, pcs_config);
+                let proof_format = ProofFormat::CairoSerde;
+
+                let proof_path = Path::new("./example_proof.json");
+
+                serialize_proof_to_file::<Blake2sMerkleChannel>(&cairo_proof, proof_path.into(), proof_format)
+                    .expect("Failed to serialize proof");
+
                 let mut it = ret.iter();
                 it.next();
 

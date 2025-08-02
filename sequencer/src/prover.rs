@@ -9,14 +9,15 @@ use cairo_vm::Felt252;
 use cairo_lang_sierra::{
     program::{Program as SierraProgram}
 };
+use stwo_cairo_adapter::adapter::adapter;
+use stwo_cairo_prover::stwo_prover::core::pcs::PcsConfig;
+use stwo_cairo_prover::stwo_prover::core::fri::FriConfig;
+use cairo_prove::prove::{prove};
+use stwo_cairo_adapter::ProverInput;
 use stwo_cairo_prover::stwo_prover::core::vcs::blake2_merkle::{
-    Blake2sMerkleChannel, Blake2sMerkleHasher,
+    Blake2sMerkleChannel
 };
 use cairo_air::utils::{ProofFormat, serialize_proof_to_file};
-use cairo_prove::prove::{prove, prover_input_from_runner};
-use stwo_cairo_prover::stwo_prover::core::fri::FriConfig;
-use stwo_cairo_prover::stwo_prover::core::pcs::PcsConfig;
-
 
 
 fn secure_pcs_config() -> PcsConfig {
@@ -79,7 +80,7 @@ impl Prover {
             serialize_output: true,
             trace_enabled: true,
             relocate_mem: true,
-            layout: LayoutName::all_cairo,
+            layout: LayoutName::all_cairo_stwo,
             proof_mode: true,
             append_return_values: true,
             finalize_builtins: true,
@@ -89,7 +90,9 @@ impl Prover {
         match cairo_run_program(&self.sierra_program, cairo_run_config) {
             Ok((_runner, ret, _serial)) => {
 
-                let prover_input = prover_input_from_runner(&_runner);
+                let mut prover_input_info = _runner.get_prover_input_info().expect("Failed to get prover input");
+                let prover_input: ProverInput = adapter(&mut prover_input_info).expect("Failed to run adapter");
+
                 let pcs_config: PcsConfig = secure_pcs_config();
 
                 let cairo_proof = prove(prover_input, pcs_config);

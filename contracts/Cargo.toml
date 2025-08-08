@@ -19,6 +19,7 @@ metashrew-support = { git = "https://github.com/sandshrewmetaprotocols/metashrew
 metashrew-core = { git = "https://github.com/sandshrewmetaprotocols/metashrew" }
 protorune = { git = "https://github.com/kungfuflex/alkanes-rs" }
 alkanes = { git = "https://github.com/kungfuflex/alkanes-rs" }
+alkanes-std-factory-support = { git = "https://github.com/kungfuflex/alkanes-rs" }
 
 
 # Bitcoin & Crypto

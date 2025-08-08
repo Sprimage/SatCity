@@ -32,11 +32,11 @@ dependencies = [
 [[package]]
 name = "alkanes"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
  "alkanes-support",
  "anyhow",
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "byteorder",
  "flate2",
  "hex",
@@ -66,7 +66,7 @@ dependencies = [
 [[package]]
 name = "alkanes-macros"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
  "ciborium",
  "proc-macro2",
@@ -78,12 +78,12 @@ dependencies = [
 [[package]]
 name = "alkanes-runtime"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
  "alkanes-macros",
  "alkanes-support",
  "anyhow",
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "metashrew-support",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -92,10 +92,10 @@ dependencies = [
 [[package]]
 name = "alkanes-support"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
  "anyhow",
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "flate2",
  "hex",
  "metashrew-support",
@@ -349,9 +349,9 @@ dependencies = [
 
 [[package]]
 name = "bitcoin"
-version = "0.32.6"
+version = "0.32.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad8929a18b8e33ea6b3c09297b687baaa71fb1b97353243a3f1029fad5c59c5b"
+checksum = "0fda569d741b895131a88ee5589a467e73e9c4718e958ac9308e4f7dc44b6945"
 dependencies = [
  "base58ck",
  "bech32 0.11.0",
@@ -474,9 +474,9 @@ checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 
 [[package]]
 name = "cc"
-version = "1.2.30"
+version = "1.2.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "deec109607ca693028562ed836a5f1c4b8bd77755c4e132fc5ce11b0b6211ae7"
+checksum = "2352e5597e9c544d5e6d9c95190d5d27738ade584fa8db0a16e130e5c2b5296e"
 dependencies = [
  "shlex",
 ]
@@ -700,9 +700,9 @@ checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
 
 [[package]]
 name = "dyn-clone"
-version = "1.0.19"
+version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c7a8fb8a9fbf66c1f703fe16184d10ca0ee9d23be5b4436400408ba54a95005"
+checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
 name = "either"
@@ -868,9 +868,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.15.4"
+version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5971ac85611da7067dbfcabef3c70ebb5606018acd9e2a3903a0da507521e0d5"
+checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
 
 [[package]]
 name = "hex"
@@ -976,7 +976,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fe4cd85333e22411419a0bcae1297d25e58c9443848b11dc6a86fefe8c78a661"
 dependencies = [
  "equivalent",
- "hashbrown 0.15.4",
+ "hashbrown 0.15.5",
  "serde",
 ]
 
@@ -1056,7 +1056,7 @@ checksum = "32a282da65faaf38286cf3be983213fcf1d2e2a58700e808f83f4ea9a4804bc0"
 [[package]]
 name = "metashrew-core"
 version = "9.0.1"
-source = "git+https://github.com/sandshrewmetaprotocols/metashrew#6cfdc438956a00a80b9782d59048f4e507d5e232"
+source = "git+https://github.com/sandshrewmetaprotocols/metashrew#8bc6d080d12837e4b53baf57e9417198dac77ea1"
 dependencies = [
  "anyhow",
  "bitcoin 0.31.2",
@@ -1076,11 +1076,11 @@ dependencies = [
 [[package]]
 name = "metashrew-support"
 version = "9.0.1"
-source = "git+https://github.com/sandshrewmetaprotocols/metashrew#6cfdc438956a00a80b9782d59048f4e507d5e232"
+source = "git+https://github.com/sandshrewmetaprotocols/metashrew#8bc6d080d12837e4b53baf57e9417198dac77ea1"
 dependencies = [
  "anyhow",
  "bech32 0.11.0",
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "flate2",
  "hex",
  "protobuf 3.7.2",
@@ -1216,9 +1216,9 @@ dependencies = [
 [[package]]
 name = "ordinals"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "derive_more 1.0.0",
  "serde",
  "serde_with",
@@ -1408,12 +1408,13 @@ dependencies = [
 
 [[package]]
 name = "protoc-bin-vendored"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd89a830d0eab2502c81a9b8226d446a52998bb78e5e33cb2637c0cdd6068d99"
+checksum = "d1c381df33c98266b5f08186583660090a4ffa0889e76c7e9a5e175f645a67fa"
 dependencies = [
  "protoc-bin-vendored-linux-aarch_64",
  "protoc-bin-vendored-linux-ppcle_64",
+ "protoc-bin-vendored-linux-s390_64",
  "protoc-bin-vendored-linux-x86_32",
  "protoc-bin-vendored-linux-x86_64",
  "protoc-bin-vendored-macos-aarch_64",
@@ -1423,45 +1424,51 @@ dependencies = [
 
 [[package]]
 name = "protoc-bin-vendored-linux-aarch_64"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f563627339f1653ea1453dfbcb4398a7369b768925eb14499457aeaa45afe22c"
+checksum = "c350df4d49b5b9e3ca79f7e646fde2377b199e13cfa87320308397e1f37e1a4c"
 
 [[package]]
 name = "protoc-bin-vendored-linux-ppcle_64"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5025c949a02cd3b60c02501dd0f348c16e8fff464f2a7f27db8a9732c608b746"
+checksum = "a55a63e6c7244f19b5c6393f025017eb5d793fd5467823a099740a7a4222440c"
+
+[[package]]
+name = "protoc-bin-vendored-linux-s390_64"
+version = "3.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1dba5565db4288e935d5330a07c264a4ee8e4a5b4a4e6f4e83fad824cc32f3b0"
 
 [[package]]
 name = "protoc-bin-vendored-linux-x86_32"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c9500ce67d132c2f3b572504088712db715755eb9adf69d55641caa2cb68a07"
+checksum = "8854774b24ee28b7868cd71dccaae8e02a2365e67a4a87a6cd11ee6cdbdf9cf5"
 
 [[package]]
 name = "protoc-bin-vendored-linux-x86_64"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5462592380cefdc9f1f14635bcce70ba9c91c1c2464c7feb2ce564726614cc41"
+checksum = "b38b07546580df720fa464ce124c4b03630a6fb83e05c336fea2a241df7e5d78"
 
 [[package]]
 name = "protoc-bin-vendored-macos-aarch_64"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c637745681b68b4435484543667a37606c95ddacf15e917710801a0877506030"
+checksum = "89278a9926ce312e51f1d999fee8825d324d603213344a9a706daa009f1d8092"
 
 [[package]]
 name = "protoc-bin-vendored-macos-x86_64"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38943f3c90319d522f94a6dfd4a134ba5e36148b9506d2d9723a82ebc57c8b55"
+checksum = "81745feda7ccfb9471d7a4de888f0652e806d5795b61480605d4943176299756"
 
 [[package]]
 name = "protoc-bin-vendored-win32"
-version = "3.1.0"
+version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7dc55d7dec32ecaf61e0bd90b3d2392d721a28b95cfd23c3e176eccefbeab2f2"
+checksum = "95067976aca6421a523e491fce939a3e65249bac4b977adee0ee9771568e8aa3"
 
 [[package]]
 name = "protoc-rust"
@@ -1478,10 +1485,10 @@ dependencies = [
 [[package]]
 name = "protorune"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
  "anyhow",
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "byteorder",
  "hex",
  "metashrew-core",
@@ -1500,11 +1507,11 @@ dependencies = [
 [[package]]
 name = "protorune-support"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#07f13a364546699c1af66b62828f1202b9533f64"
+source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
 dependencies = [
  "anyhow",
  "bech32 0.11.0",
- "bitcoin 0.32.6",
+ "bitcoin 0.32.7",
  "hex",
  "metashrew-support",
  "ordinals 0.5.2",
@@ -1665,9 +1672,9 @@ dependencies = [
 
 [[package]]
 name = "ruint"
-version = "1.15.0"
+version = "1.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11256b5fe8c68f56ac6f39ef0720e592f33d2367a4782740d9c9142e889c7fb4"
+checksum = "9ecb38f82477f20c5c3d62ef52d7c4e536e38ea9b73fb570a20c5cae0e14bcf6"
 dependencies = [
  "alloy-rlp",
  "ark-ff 0.3.0",
@@ -1914,9 +1921,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.141"
+version = "1.0.142"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30b9eff21ebe718216c6ec64e1d9ac57087aad11efc64e32002bce4a0d4c03d3"
+checksum = "030fedb782600dcbd6f02d479bf0d817ac3bb40d644745b769d6a96bc3afc5a7"
 dependencies = [
  "itoa",
  "memchr",
@@ -2462,7 +2469,7 @@ version = "0.60.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2f500e4d28234f72040990ec9d39e3a6b950f9f22d3dba18416c35882612bcb"
 dependencies = [
- "windows-targets 0.53.2",
+ "windows-targets 0.53.3",
 ]
 
 [[package]]
@@ -2483,10 +2490,11 @@ dependencies = [
 
 [[package]]
 name = "windows-targets"
-version = "0.53.2"
+version = "0.53.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c66f69fcc9ce11da9966ddb31a40968cad001c5bedeb5c2b82ede4253ab48aef"
+checksum = "d5fe6031c4041849d7c496a8ded650796e7b6ecc19df1a431c1a363342e5dc91"
 dependencies = [
+ "windows-link",
  "windows_aarch64_gnullvm 0.53.0",
  "windows_aarch64_msvc 0.53.0",
  "windows_i686_gnu 0.53.0",

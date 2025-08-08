@@ -4072,6 +4072,7 @@ name = "sequencer"
 version = "0.1.0"
 dependencies = [
  "bincode 2.0.1",
+ "bytemuck",
  "cairo-air",
  "cairo-lang-casm 2.12.0-dev.0",
  "cairo-lang-sierra 2.12.0-dev.0",

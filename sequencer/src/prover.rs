@@ -4,18 +4,20 @@ use crate::state::State;
 use bincode::enc::write::Writer;
 use cairo1_run::error::Error;
 use cairo1_run::{cairo_run_program, Cairo1RunConfig, FuncArg};
-use cairo_air::utils::{ ProofFormat};
+use cairo_air::utils::ProofFormat;
 use cairo_air::PreProcessedTraceVariant;
 use cairo_lang_sierra::program::Program as SierraProgram;
+use cairo_vm::stdlib::collections::HashMap;
 use cairo_vm::types::layout_name::LayoutName;
+use cairo_vm::vm::errors::trace_errors::TraceError;
 use cairo_vm::Felt252;
-use cairo_vm::{air_public_input::PublicInputError, vm::errors::trace_errors::TraceError};
 use serde::Serialize;
-use std::io::{self, Write};
-use std::path::Path;
+use std::io::Write;
 use std::path::PathBuf;
-use stwo_cairo_adapter::vm_import::{ adapt_vm_output};
-use stwo_cairo_adapter::ProverInput;
+use stwo_cairo_adapter::builtins::MemorySegmentAddresses;
+use stwo_cairo_adapter::memory::{MemoryBuilder, MemoryConfig, MemoryEntry as StwoMemoryEntry};
+use stwo_cairo_adapter::vm_import::{adapt_to_stwo_input, RelocatedTraceEntry as StwoRelocatedTraceEntry};
+use stwo_cairo_adapter::{ProverInput, PublicSegmentContext};
 use stwo_cairo_prover::prover::{default_prod_prover_parameters, prove_cairo};
 use stwo_cairo_prover::stwo_prover::core::backend::simd::SimdBackend;
 use stwo_cairo_prover::stwo_prover::core::backend::BackendForChannel;
@@ -24,37 +26,18 @@ use stwo_cairo_prover::stwo_prover::core::pcs::PcsConfig;
 use stwo_cairo_prover::stwo_prover::core::vcs::blake2_merkle::Blake2sMerkleChannel;
 use stwo_cairo_prover::stwo_prover::core::vcs::ops::MerkleHasher;
 use stwo_cairo_serialize::CairoSerialize;
+use bytemuck::cast_slice;
 
-pub struct FileWriter {
-    buf_writer: io::BufWriter<std::fs::File>,
+// Vec-backed writer to capture Cairo encoders' output in-memory.
+struct VecWriter<'a> {
+    buf: &'a mut Vec<u8>,
     bytes_written: usize,
 }
-
-impl Writer for FileWriter {
+impl<'a> Writer for VecWriter<'a> {
     fn write(&mut self, bytes: &[u8]) -> Result<(), bincode::error::EncodeError> {
-        self.buf_writer
-            .write_all(bytes)
-            .map_err(|e| bincode::error::EncodeError::Io {
-                inner: e,
-                index: self.bytes_written,
-            })?;
-
+        self.buf.extend_from_slice(bytes);
         self.bytes_written += bytes.len();
-
         Ok(())
-    }
-}
-
-impl FileWriter {
-    fn new(buf_writer: io::BufWriter<std::fs::File>) -> Self {
-        Self {
-            buf_writer,
-            bytes_written: 0,
-        }
-    }
-
-    fn flush(&mut self) -> io::Result<()> {
-        self.buf_writer.flush()
     }
 }
 
@@ -109,62 +92,71 @@ impl Prover {
 
         match cairo_run_program(&self.sierra_program, cairo_run_config) {
             Ok((_runner, ret, _serial)) => {
-                let public_input_path = Path::new("./public_inputs.json");
-                let private_input_path = Path::new("./private_inputs.json");
-                let trace_file = Path::new("./trace/trace.bin");
-                let memory_file = Path::new("./trace/memory.bin");
+                // Prepare public input in-memory.
+                let public_input = _runner.get_air_public_input()?;
 
-                let trace_path = trace_file
-                    .canonicalize()
-                    .unwrap_or(trace_file.to_path_buf())
-                    .to_string_lossy()
-                    .to_string();
-                let memory_path = memory_file
-                    .canonicalize()
-                    .unwrap_or(memory_file.to_path_buf())
-                    .to_string_lossy()
-                    .to_string();
-
-                let public_inputs_json = _runner.get_air_public_input()?.serialize_json()?;
-                std::fs::write(public_input_path, public_inputs_json)?;
-
-                let private_inputs_json = _runner
-                    .get_air_private_input()
-                    .to_serializable(trace_path, memory_path)
-                    .serialize_json()
-                    .map_err(PublicInputError::Serde)?;
-                std::fs::write(private_input_path, private_inputs_json)?;
-
+                // Encode relocated trace and memory into in-memory buffers.
                 let relocated_trace = _runner
                     .relocated_trace
+                    .as_ref()
                     .ok_or(Error::Trace(TraceError::TraceNotRelocated))?;
-                let trace_file_created = std::fs::File::create(trace_file)?;
-                let mut trace_writer = FileWriter::new(io::BufWriter::with_capacity(
-                    3 * 1024 * 1024,
-                    trace_file_created,
-                ));
-                cairo_vm::cairo_run::write_encoded_trace(&relocated_trace, &mut trace_writer)?;
-                trace_writer.flush()?;
 
-                let memory_file_created = std::fs::File::create(memory_file)?;
-                let mut memory_writer = FileWriter::new(io::BufWriter::with_capacity(
-                    5 * 1024 * 1024,
-                    memory_file_created,
-                ));
+                let mut trace_bytes = Vec::with_capacity(3 * 1024 * 1024);
+                cairo_vm::cairo_run::write_encoded_trace(
+                    relocated_trace,
+                    &mut VecWriter {
+                        buf: &mut trace_bytes,
+                        bytes_written: 0,
+                    },
+                )?;
+
+                let mut memory_bytes = Vec::with_capacity(5 * 1024 * 1024);
                 cairo_vm::cairo_run::write_encoded_memory(
                     &_runner.relocated_memory,
-                    &mut memory_writer,
+                    &mut VecWriter {
+                        buf: &mut memory_bytes,
+                        bytes_written: 0,
+                    },
                 )?;
-                memory_writer.flush()?;
 
-                let prover_input: ProverInput = adapt_vm_output(public_input_path, private_input_path).expect("");
+                // Reinterpret encoded bytes as typed slices, matching the adapter's file-backed format.
+                let trace_entries: &[StwoRelocatedTraceEntry] = cast_slice(&trace_bytes);
+                let memory_entries: &[StwoMemoryEntry] = cast_slice(&memory_bytes);
+
+                // Build MemoryBuilder from entries.
+                let memory_builder = MemoryBuilder::from_iter(
+                    MemoryConfig::default(),
+                    memory_entries.iter().copied(),
+                );
+
+                // Collect public memory addresses and memory segments.
+                let public_memory_addresses: Vec<u32> = public_input
+                    .public_memory
+                    .iter()
+                    .map(|entry| entry.address as u32)
+                    .collect();
+
+                let memory_segments: HashMap<&str, MemorySegmentAddresses> = public_input
+                    .memory_segments
+                    .into_iter()
+                    .map(|(k, v)| (k, v.into()))
+                    .collect();
+
+                // Create prover input directly.
+                let prover_input: ProverInput = adapt_to_stwo_input(
+                    trace_entries,
+                    memory_builder,
+                    public_memory_addresses,
+                    &memory_segments,
+                    PublicSegmentContext::bootloader_context(),
+                ).unwrap();
 
                 // println!("prover_input: {:?}", &prover_input);
                 let prover_params = default_prod_prover_parameters();
 
                 let proof_format = ProofFormat::CairoSerde;
 
-                let proof_path = Path::new("./example_proof.json").to_path_buf();
+                let proof_path = PathBuf::from("./example_proof.json");
 
                 let _cairo_proof = Prover::run_inner::<Blake2sMerkleChannel>(prover_input, prover_params.pcs_config, prover_params.preprocessed_trace, proof_path, proof_format).unwrap();
 

@@ -585,7 +585,7 @@ dependencies = [
  "starknet-types-core",
  "stwo",
  "stwo-cairo-common",
- "stwo-cairo-serialize",
+ "stwo-cairo-serialize 0.1.0 (git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4)",
  "stwo-constraint-framework",
  "thiserror 2.0.12",
  "tracing",
@@ -2134,10 +2134,15 @@ dependencies = [
  "anyhow",
  "bitcoin 0.31.2",
  "cairo-air-verifier-lite",
+ "game-escrow",
  "hex",
  "hex_lit",
  "metashrew-core",
  "protorune",
+ "starknet-ff",
+ "stwo",
+ "stwo-cairo-serialize 0.1.0",
+ "verifier",
  "wasm-bindgen",
  "wasm-bindgen-test",
 ]
@@ -2515,7 +2520,16 @@ dependencies = [
  "starknet-ff",
  "starknet-types-core",
  "stwo",
- "stwo-cairo-serialize",
+ "stwo-cairo-serialize 0.1.0 (git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4)",
+]
+
+[[package]]
+name = "stwo-cairo-serialize"
+version = "0.1.0"
+dependencies = [
+ "starknet-ff",
+ "stwo",
+ "stwo-cairo-serialize-derive 0.1.0",
 ]
 
 [[package]]
@@ -2525,7 +2539,15 @@ source = "git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e
 dependencies = [
  "starknet-ff",
  "stwo",
- "stwo-cairo-serialize-derive",
+ "stwo-cairo-serialize-derive 0.1.0 (git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4)",
+]
+
+[[package]]
+name = "stwo-cairo-serialize-derive"
+version = "0.1.0"
+dependencies = [
+ "quote",
+ "syn 2.0.104",
 ]
 
 [[package]]

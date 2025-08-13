@@ -43,6 +43,11 @@ cairo-air-verifier-lite = { workspace = true }
 anyhow = { workspace = true }
 bitcoin = { workspace = true }
 hex = { workspace = true }
+starknet-ff = "0.3.7"
+stwo = { git = "https://github.com/starkware-libs/stwo", rev = "d9c929d", default-features = false }
+stwo-cairo-serialize = { path = "../stwo-alkanes/crates/cairo-serialize" }
+verifier = { path = "alkanes/verifier" }
+game-escrow = { path = "alkanes/game-escrow" }
 
 [dev-dependencies]
 alkanes = { workspace = true, features = ["test-utils"] }

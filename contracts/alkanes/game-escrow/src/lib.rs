@@ -24,19 +24,16 @@
 
 use alkanes_macros::MessageDispatch;
 use alkanes_runtime::{
-    auth::AuthenticatedResponder, declare_alkane, runtime::AlkaneResponder, storage::StoragePointer
+    auth::AuthenticatedResponder, declare_alkane, runtime::AlkaneResponder, storage::StoragePointer,
 };
 use alkanes_support::{
-    parcel::AlkaneTransfer,
     cellpack::Cellpack,
     context::Context,
     id::AlkaneId,
-    parcel::AlkaneTransferParcel,
-    response::CallResponse
+    parcel::{AlkaneTransfer, AlkaneTransferParcel},
+    response::CallResponse,
 };
-use alkanes_std_factory_support::MintableToken;
 use anyhow::{anyhow, Result};
-use metashrew_support::index_pointer::KeyValuePointer;
 use std::sync::Arc;
 
 // --- Storage Pointers ---
@@ -68,16 +65,20 @@ pub struct GameEscrow(());
 
 impl AlkaneResponder for GameEscrow {}
 impl AuthenticatedResponder for GameEscrow {}
-impl MintableToken for GameEscrow {}
+// Not a token; maintains balances and ownership state for deposits.
 
 #[derive(MessageDispatch)]
 pub enum GameEscrowMessage {
-    /// Initializes the contract, setting the position token implementation.
+    /// Initializes the contract (idempotent once).
     #[opcode(0)]
-    Initialize {
-        position_token_implementation: AlkaneId,
-    },
-    
+    Initialize { verifier: AlkaneId },
+    /// Accept deposits from incoming_alkanes
+    #[opcode(1)]
+    Deposit,
+    /// DAO-only: set paused flag
+    #[opcode(6)]
+    SetPaused { paused: u128 },
+    // reserved for future view methods
 }
 
 impl GameEscrow {
@@ -93,26 +94,48 @@ impl GameEscrow {
 
 
     /// Initializes the contract. Can only be called once.
-    fn initialize(&self, position_token_implementation: AlkaneId) -> Result<CallResponse> {
+    fn initialize(&self, _verifier: AlkaneId) -> Result<CallResponse> {
         if self.is_initialized() {
             return Err(anyhow!("Contract already initialized"));
         }
 
-        // Store the position token implementation address
-
-        // Deploy the DAO's auth token and send it to the caller
-        let dao_auth_token_transfer = self.deploy_self_auth_token(1)?;
-        let mut response = CallResponse::default();
-        response.alkanes.0.push(dao_auth_token_transfer);
-
         // Set the initialized flag
         initialized_pointer().set_value::<u8>(1);
 
-        Ok(response)
+        Ok(CallResponse::default())
     }
 
-    
-    
+    fn deposit(&self) -> Result<CallResponse> {
+        if self.is_paused() { return Err(anyhow!("PAUSED")); }
+        let ctx = self.context()?;
+        let caller = ctx.caller;
+        let input = ctx.incoming_alkanes;
+
+        for t in input.0.iter() {
+            if t.value == 1 {
+                // NFT ownership map: /nft/<id> -> owner AlkaneId bytes
+                let mut p = StoragePointer::from_keyword("/nft/").select(&t.id.clone().into());
+                p.set(Arc::new(caller.into()));
+            } else if t.value > 1 {
+                // FT balances: /ft/<caller>/<token>
+                let mut p = StoragePointer::from_keyword("/ft/")
+                    .select(&caller.into()).keyword("/").select(&t.id.clone().into());
+                let prev = p.get_value::<u128>();
+                p.set_value::<u128>(prev.saturating_add(t.value));
+            }
+        }
+        Ok(CallResponse::default())
+    }
+
+    fn set_paused(&self, paused: u128) -> Result<CallResponse> {
+        self.only_owner()?;
+        paused_pointer().set_value::<u8>(if paused != 0 { 1 } else { 0 });
+        Ok(CallResponse::default())
+    }
+
+    // no other methods for now
 }
 
-// Declare the contract's entry points for the Alkanes VM.
+declare_alkane! {
+    impl AlkaneResponder for GameEscrow { type Message = GameEscrowMessage; }
+}

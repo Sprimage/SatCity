@@ -20,6 +20,8 @@ metashrew-core = { git = "https://github.com/sandshrewmetaprotocols/metashrew" }
 protorune = { git = "https://github.com/kungfuflex/alkanes-rs" }
 alkanes = { git = "https://github.com/kungfuflex/alkanes-rs" }
 alkanes-std-factory-support = { git = "https://github.com/kungfuflex/alkanes-rs" }
+cairo-air-verifier-lite = { git = "https://github.com/Sprimage/stwo-alkanes", rev = "a323cd2d343c97b07117e1ae0103f868d86470f4" }
+
 
 
 # Bitcoin & Crypto
@@ -37,6 +39,7 @@ wasm-bindgen-test = "0.3.49"
 [dependencies]
 alkanes-runtime = { workspace = true }
 alkanes-support = { workspace = true }
+cairo-air-verifier-lite = { workspace = true }
 anyhow = { workspace = true }
 bitcoin = { workspace = true }
 hex = { workspace = true }

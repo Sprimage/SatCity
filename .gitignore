@@ -8,3 +8,4 @@ sequencer/private_inputs.json
 sequencer/proof_old.json
 sequencer/trace
 sequencer/public_inputs.json
+.DS_Store

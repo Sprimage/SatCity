@@ -16,21 +16,66 @@
 //!
 //! See ESSENTIAL_ALKANES_CONTRACTS_CHEATSHEET.md (Rule 27) for witness reading.
 
-use alkanes_macros::MessageDispatch;
 use alkanes_runtime::{
-    auth::AuthenticatedResponder, declare_alkane, runtime::AlkaneResponder, storage::StoragePointer,
+    auth::AuthenticatedResponder, declare_alkane, message::MessageDispatch, runtime::AlkaneResponder, storage::StoragePointer,
 };
-use alkanes_support::{context::Context, id::AlkaneId, response::CallResponse};
+use alkanes_support::{context::Context, id::AlkaneId, response::CallResponse, witness::find_witness_payload};
 use anyhow::{anyhow, Result};
-use bitcoin::{consensus::Decodable, Transaction};
 use cairo_air_verifier_lite::verifier::verify_cairo;
 use cairo_air_verifier_lite::{air::CairoProof, PreProcessedTraceVariant};
 use starknet_ff::FieldElement;
+use bitcoin::hashes::Hash;
+use bitcoin::{Transaction, Txid};
+use metashrew_support::compat::to_arraybuffer_layout;
 use metashrew_support::index_pointer::KeyValuePointer;
+use metashrew_support::utils::consensus_decode;
 use std::io::Cursor;
 use std::sync::Arc;
-use stwo::core::vcs::blake2_hash::Blake2sHash;
-use stwo::core::vcs::blake2_merkle::Blake2sMerkleChannel;
+use stwo::core::vcs::blake2_merkle::{Blake2sMerkleChannel, Blake2sMerkleHasher};
+
+pub struct ContextHandle(());
+
+#[cfg(test)]
+impl ContextHandle {
+    /// Get the current transaction bytes
+    pub fn transaction(&self) -> Vec<u8> {
+        // This is a placeholder implementation that would normally
+        // access the transaction from the runtime context
+        Vec::new()
+    }
+}
+
+impl AlkaneResponder for ContextHandle {}
+
+
+pub const CONTEXT: ContextHandle = ContextHandle(());
+
+/// Extension trait for Context to add transaction_id method
+trait ContextExt {
+    /// Get the transaction ID from the context
+    fn transaction_id(&self) -> Result<Txid>;
+}
+
+#[cfg(test)]
+impl ContextExt for Context {
+    fn transaction_id(&self) -> Result<Txid> {
+        // Test implementation with all zeros
+        Ok(Txid::from_slice(&[0; 32]).unwrap_or_else(|_| {
+            // This should never happen with a valid-length slice
+            panic!("Failed to create zero Txid")
+        }))
+    }
+}
+
+#[cfg(not(test))]
+impl ContextExt for Context {
+    fn transaction_id(&self) -> Result<Txid> {
+        Ok(
+            consensus_decode::<Transaction>(&mut std::io::Cursor::new(CONTEXT.transaction()))?
+                .compute_txid(),
+        )
+    }
+}
 
 // Storage keys
 fn initialized_pointer() -> StoragePointer {
@@ -45,6 +90,7 @@ fn state_root_pointer() -> StoragePointer {
 fn last_variant_pointer() -> StoragePointer {
     StoragePointer::from_keyword("/last_preprocessed_variant")
 }
+// No witness storage key: read witness bytes from the current transaction
 
 #[derive(Default)]
 pub struct Verifier;
@@ -93,16 +139,9 @@ impl Verifier {
     fn set_last_variant(&self, v: u8) { last_variant_pointer().set(Arc::new(vec![v])); }
 
     fn read_witness_payload(&self) -> Result<Vec<u8>> {
-        // Read the full transaction bytes from context
-        let tx: Transaction = bitcoin::consensus::encode::deserialize(&Context::transaction())?;
-        // Use input 0 by convention
-        let payload = tx
-            .input
-            .get(0)
-            .and_then(|i| i.witness.iter().find(|w| !w.is_empty()))
-            .map(|w| w.to_vec())
-            .ok_or_else(|| anyhow!("NO_WITNESS_PAYLOAD"))?;
-        Ok(payload)
+        let tx = consensus_decode::<Transaction>(&mut Cursor::new(CONTEXT.transaction()))?;
+        let data: Vec<u8> = find_witness_payload(&tx, 0).unwrap_or_else(|| vec![]);
+        Ok(data)
     }
 
     fn parse_payload(
@@ -142,7 +181,8 @@ impl Verifier {
         let mut felts: Vec<FieldElement> = Vec::with_capacity(n);
         for i in 0..n {
             let word = &bytes[32 * i..32 * (i + 1)];
-            let fe = FieldElement::from_bytes_be(word).map_err(|_| anyhow!("BAD_FELT"))?;
+            let arr: [u8; 32] = word.try_into().map_err(|_| anyhow!("BAD_FELT"))?;
+            let fe = FieldElement::from_bytes_be(&arr).map_err(|_| anyhow!("BAD_FELT"))?;
             felts.push(fe);
         }
         bytes = &bytes[32 * n..];
@@ -158,10 +198,10 @@ impl Verifier {
     fn deserialize_proof(
         &self,
         felts: &[FieldElement],
-    ) -> Result<CairoProof<Blake2sHash>> {
+    ) -> Result<CairoProof<Blake2sMerkleHasher>> {
         use stwo_cairo_serialize::CairoDeserialize;
         let mut it = felts.iter();
-        let proof: CairoProof<Blake2sHash> = CairoProof::deserialize(&mut it);
+        let proof: CairoProof<Blake2sMerkleHasher> = CairoProof::deserialize(&mut it);
         Ok(proof)
     }
 

@@ -32,11 +32,12 @@ dependencies = [
 [[package]]
 name = "alkanes"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "alkanes-support",
  "anyhow",
  "bitcoin 0.32.7",
+ "borsh",
  "byteorder",
  "flate2",
  "hex",
@@ -56,6 +57,7 @@ dependencies = [
  "ruint",
  "serde",
  "serde_json",
+ "sha2",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-bindgen-test",
@@ -66,7 +68,7 @@ dependencies = [
 [[package]]
 name = "alkanes-macros"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "ciborium",
  "proc-macro2",
@@ -78,7 +80,7 @@ dependencies = [
 [[package]]
 name = "alkanes-runtime"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "alkanes-macros",
  "alkanes-support",
@@ -92,7 +94,7 @@ dependencies = [
 [[package]]
 name = "alkanes-std-factory-support"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "alkanes-runtime",
  "alkanes-support",
@@ -105,7 +107,7 @@ dependencies = [
 [[package]]
 name = "alkanes-support"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "anyhow",
  "bitcoin 0.32.7",
@@ -159,9 +161,9 @@ checksum = "862ed96ca487e809f1c8e5a8447f6ee2cf102f846893800b20cebdf541fc6bbd"
 
 [[package]]
 name = "anyhow"
-version = "1.0.98"
+version = "1.0.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
+checksum = "b0674a1ddeecb70197781e945de4b3b8ffb61fa939a5597bcf48503737663100"
 
 [[package]]
 name = "ark-ff"
@@ -307,7 +309,7 @@ checksum = "ffdcb70bdbc4d478427380519163274ac86e52916e10f0a8889adf0f96d3fee7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -387,7 +389,6 @@ dependencies = [
  "hex-conservative 0.1.2",
  "hex_lit",
  "secp256k1 0.28.2",
- "serde",
 ]
 
 [[package]]
@@ -412,9 +413,6 @@ name = "bitcoin-internals"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9425c3bf7089c983facbae04de54513cce73b41c7f9ff8c845b54e7bc64ebbfb"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "bitcoin-internals"
@@ -460,7 +458,6 @@ checksum = "1930a4dabfebb8d7d9992db18ebe3ae2876f0a305fab206fd168df931ede293b"
 dependencies = [
  "bitcoin-internals 0.2.0",
  "hex-conservative 0.1.2",
- "serde",
 ]
 
 [[package]]
@@ -523,6 +520,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "borsh"
+version = "1.5.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad8646f98db542e39fc66e68a20b2144f6a732636df7c2354e74645faaa433ce"
+dependencies = [
+ "borsh-derive",
+ "cfg_aliases",
+]
+
+[[package]]
+name = "borsh-derive"
+version = "1.5.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fdd1d3c0c2f5833f22386f252fe8ed005c7f59fdcddeef025c01b4c3b9fd9ac3"
+dependencies = [
+ "once_cell",
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.105",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -551,7 +571,7 @@ checksum = "4f154e572231cb6ba2bd1176980827e3d5dc04cc183a75dea38109fbdd672d29"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -585,9 +605,9 @@ dependencies = [
  "starknet-types-core",
  "stwo",
  "stwo-cairo-common",
- "stwo-cairo-serialize 0.1.0 (git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4)",
+ "stwo-cairo-serialize",
  "stwo-constraint-framework",
- "thiserror 2.0.12",
+ "thiserror 2.0.14",
  "tracing",
 ]
 
@@ -605,6 +625,12 @@ name = "cfg-if"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9555578bc9e57714c812a1f84e4fc5b4d21fcb063490c624de019f7464c91268"
+
+[[package]]
+name = "cfg_aliases"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
 name = "chrono"
@@ -648,9 +674,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.5.43"
+version = "4.5.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50fd97c9dc2399518aa331917ac6f274280ec5eb34e555dd291899745c48ec6f"
+checksum = "1fc0e74a703892159f5ae7d3aac52c8e6c392f5ae5f359c70b5881d60aaac318"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -658,9 +684,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.5.43"
+version = "4.5.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c35b5830294e1fa0462034af85cc95225a4cb07092c088c55bda3147cfcd8f65"
+checksum = "b3e7f4214277f3c7aa526a59dd3fbe306a370daee1f8b7b8c987069cd8e888a8"
 dependencies = [
  "anstyle",
  "clap_lex",
@@ -668,14 +694,14 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "4.5.41"
+version = "4.5.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef4f52386a59ca4c860f7393bcf8abd8dfd91ecccc0f774635ff68e92eeef491"
+checksum = "14cb31bb0a7d536caef2639baa7fad459e15c3144efefa6dbd1c84562c4739f6"
 dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -813,7 +839,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "strsim",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -824,7 +850,7 @@ checksum = "fc34b93ccb385b40dc71c6fceac4b2ad23662c7eeb248cf10d529b7e055b6ead"
 dependencies = [
  "darling_core",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -858,7 +884,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustc_version 0.4.1",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -878,7 +904,7 @@ checksum = "cb7330aeadfbe296029522e6c40f315320aba36fc43a5b3632f3795348f3bd22"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
  "unicode-xid",
 ]
 
@@ -923,7 +949,7 @@ dependencies = [
  "enum-ordinalize",
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -949,7 +975,7 @@ checksum = "0d28318a75d4aead5c4db25382e8ef717932d0346600cacae6357eb5941bc5ff"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -1046,14 +1072,13 @@ dependencies = [
  "alkanes-std-factory-support",
  "alkanes-support",
  "anyhow",
- "bitcoin 0.31.2",
+ "bitcoin 0.32.7",
  "cairo-air-verifier-lite",
  "hex",
  "hex_lit",
  "metashrew-core",
  "metashrew-support",
  "protorune",
- "secp256k1 0.28.2",
  "wasm-bindgen",
  "wasm-bindgen-test",
 ]
@@ -1228,7 +1253,7 @@ checksum = "a0eb5a3343abf848c0984fe4604b2b105da9539376e24fc0a3b0007411ae4fd9"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -1333,9 +1358,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "libc"
-version = "0.2.174"
+version = "0.2.175"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1171693293099992e19cddea4e8b849964e9846f4acee11b3948bcc337be8776"
+checksum = "6a82ae493e598baaea5209805c49bbf2ea7de956d50d7da0da1164f9c6d28543"
 
 [[package]]
 name = "libm"
@@ -1530,7 +1555,7 @@ dependencies = [
 [[package]]
 name = "ordinals"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "bitcoin 0.32.7",
  "derive_more 1.0.0",
@@ -1564,7 +1589,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -1580,7 +1605,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1db05f56d34358a8b1066f67cbb203ee3e7ed2ba674a6263a1d5ec6db2204323"
 dependencies = [
  "memchr",
- "thiserror 2.0.12",
+ "thiserror 2.0.14",
  "ucd-trie",
 ]
 
@@ -1627,9 +1652,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.95"
+version = "1.0.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
+checksum = "d61789d7719defeb74ea5fe81f2fdfdbd28a803847077cecce2ff14e1472f6f1"
 dependencies = [
  "unicode-ident",
 ]
@@ -1805,7 +1830,7 @@ dependencies = [
 [[package]]
 name = "protorune"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "anyhow",
  "bitcoin 0.32.7",
@@ -1827,7 +1852,7 @@ dependencies = [
 [[package]]
 name = "protorune-support"
 version = "0.5.2"
-source = "git+https://github.com/kungfuflex/alkanes-rs#690b4102636c1a78defd25f9aef9a43ded4bba9c"
+source = "git+https://github.com/kungfuflex/alkanes-rs#636c35a0fcea2208449c8c97c189c2cb03a6bdf4"
 dependencies = [
  "anyhow",
  "bech32 0.11.0",
@@ -1933,9 +1958,9 @@ dependencies = [
 
 [[package]]
 name = "rayon"
-version = "1.10.0"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b418a60154510ca1a002a752ca9714984e21e4241e804d32555251faf8b78ffa"
+checksum = "368f01d005bf8fd9b1206fb6fa653e6c4a81ceb1466406b81792d87c5677a58f"
 dependencies = [
  "either",
  "rayon-core",
@@ -1943,9 +1968,9 @@ dependencies = [
 
 [[package]]
 name = "rayon-core"
-version = "1.12.1"
+version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1465873a3dfdaa8ae7cb14b4383657caab0b3e8a0aa9ae8e04b044854c8dfce2"
+checksum = "22e18b0f0062d30d4230b2e85ff77fdfe4326feb054b9783a3460d8435c8ab91"
 dependencies = [
  "crossbeam-deque",
  "crossbeam-utils",
@@ -1968,7 +1993,7 @@ checksum = "1165225c21bff1f3bbce98f5a1f889949bc902d3575308cc7b0de30b4f6d27c7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2132,7 +2157,7 @@ dependencies = [
  "alkanes-runtime",
  "alkanes-support",
  "anyhow",
- "bitcoin 0.31.2",
+ "bitcoin 0.32.7",
  "cairo-air-verifier-lite",
  "game-escrow",
  "hex",
@@ -2141,7 +2166,7 @@ dependencies = [
  "protorune",
  "starknet-ff",
  "stwo",
- "stwo-cairo-serialize 0.1.0",
+ "stwo-cairo-serialize",
  "verifier",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -2190,7 +2215,6 @@ checksum = "d24b59d129cdadea20aea4fb2352fa053712e5d713eee47d700cd4b2bc002f10"
 dependencies = [
  "bitcoin_hashes 0.13.0",
  "secp256k1-sys 0.9.2",
- "serde",
 ]
 
 [[package]]
@@ -2281,7 +2305,7 @@ checksum = "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2325,7 +2349,7 @@ dependencies = [
  "darling",
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2401,7 +2425,7 @@ checksum = "bbc159a1934c7be9761c237333a57febe060ace2bc9e3b337a59a37af206d19f"
 dependencies = [
  "starknet-curve 0.4.2",
  "starknet-ff",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2502,7 +2526,7 @@ dependencies = [
  "starknet-crypto",
  "starknet-ff",
  "std-shims",
- "thiserror 2.0.12",
+ "thiserror 2.0.14",
  "tracing",
  "tracing-subscriber",
 ]
@@ -2520,16 +2544,7 @@ dependencies = [
  "starknet-ff",
  "starknet-types-core",
  "stwo",
- "stwo-cairo-serialize 0.1.0 (git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4)",
-]
-
-[[package]]
-name = "stwo-cairo-serialize"
-version = "0.1.0"
-dependencies = [
- "starknet-ff",
- "stwo",
- "stwo-cairo-serialize-derive 0.1.0",
+ "stwo-cairo-serialize",
 ]
 
 [[package]]
@@ -2539,15 +2554,7 @@ source = "git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e
 dependencies = [
  "starknet-ff",
  "stwo",
- "stwo-cairo-serialize-derive 0.1.0 (git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4)",
-]
-
-[[package]]
-name = "stwo-cairo-serialize-derive"
-version = "0.1.0"
-dependencies = [
- "quote",
- "syn 2.0.104",
+ "stwo-cairo-serialize-derive",
 ]
 
 [[package]]
@@ -2556,7 +2563,7 @@ version = "0.1.0"
 source = "git+https://github.com/Sprimage/stwo-alkanes?rev=a323cd2d343c97b07117e1ae0103f868d86470f4#a323cd2d343c97b07117e1ae0103f868d86470f4"
 dependencies = [
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2593,9 +2600,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.104"
+version = "2.0.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17b6f705963418cdb9927482fa304bc562ece2fdd4f616084c50b7023b435a40"
+checksum = "7bc3fcb250e53458e712715cf74285c1f889686520d79294a9ef3bd7aa1fc619"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2632,11 +2639,11 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.12"
+version = "2.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "567b8a2dae586314f7be2a752ec7474332959c6460e02bde30d702a66d488708"
+checksum = "0b0949c3a6c842cbde3f1686d6eea5a010516deb7085f79db747562d4102f41e"
 dependencies = [
- "thiserror-impl 2.0.12",
+ "thiserror-impl 2.0.14",
 ]
 
 [[package]]
@@ -2647,18 +2654,18 @@ checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.12"
+version = "2.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f7cf42b4507d8ea322120659672cf1b9dbb93f8f2d4ecfd6e51350ff5b17a1d"
+checksum = "cc5b44b4ab9c2fdd0e0512e6bece8388e214c0749f5862b114cc5b7a25daf227"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2728,7 +2735,7 @@ checksum = "81383ab64e72a7a8b8e13130c49e3dab29def6d0c7d76a03087b3cf71c5c6903"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -2807,14 +2814,16 @@ dependencies = [
  "alkanes-std-factory-support",
  "alkanes-support",
  "anyhow",
- "bitcoin 0.31.2",
+ "bitcoin 0.32.7",
  "cairo-air-verifier-lite",
  "hex",
  "hex_lit",
  "metashrew-core",
  "metashrew-support",
  "protorune",
- "secp256k1 0.28.2",
+ "starknet-ff",
+ "stwo",
+ "stwo-cairo-serialize",
  "wasm-bindgen",
  "wasm-bindgen-test",
 ]
@@ -2872,7 +2881,7 @@ dependencies = [
  "log",
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
  "wasm-bindgen-shared",
 ]
 
@@ -2907,7 +2916,7 @@ checksum = "8ae87ea40c9f689fc23f209965b6fb8a99ad69aeeb0231408be24920604395de"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -2942,7 +2951,7 @@ checksum = "17d5042cc5fa009658f9a7333ef24291b1291a25b6382dd68862a7f3b969f69b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -3054,7 +3063,7 @@ checksum = "a47fddd13af08290e67f4acabf4b459f647552718f683a7b415d290ac744a836"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -3065,7 +3074,7 @@ checksum = "bd9211b69f8dcdfa817bfd14bf1c97c9188afa36f4750130fcdf3f400eca9fa8"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -3283,7 +3292,7 @@ checksum = "9ecf5b4cc5364572d7f4c329661bcc82724222973f2cab6f050a4e5c22f75181"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]
 
 [[package]]
@@ -3303,5 +3312,5 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.104",
+ "syn 2.0.105",
 ]

@@ -22,10 +22,12 @@
 //! - Build the workspace.
 //! - Rewrite all documentation to reflect this new, correct architecture.
 
-use alkanes_macros::MessageDispatch;
 use alkanes_runtime::{
     auth::AuthenticatedResponder, declare_alkane, runtime::AlkaneResponder, storage::StoragePointer,
 };
+use alkanes_runtime::message::MessageDispatch;
+use metashrew_support::index_pointer::KeyValuePointer;
+use metashrew_support::compat::to_arraybuffer_layout;
 use alkanes_support::{
     cellpack::Cellpack,
     context::Context,

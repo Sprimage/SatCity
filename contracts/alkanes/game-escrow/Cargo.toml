@@ -14,7 +14,6 @@ alkanes-macros = { workspace = true }
 alkanes-std-factory-support = { workspace = true }
 metashrew-support = { workspace = true }
 bitcoin = { workspace = true }
-secp256k1 = { workspace = true }
 anyhow = { workspace = true }
 hex = { workspace = true }
 

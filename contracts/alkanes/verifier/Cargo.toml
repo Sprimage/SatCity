@@ -9,12 +9,14 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 alkanes-runtime = { workspace = true }
 cairo-air-verifier-lite = { workspace = true }
+stwo-cairo-serialize = { workspace = true }
+stwo = { workspace = true }
+starknet-ff = { workspace = true }
 alkanes-support = { workspace = true }
 alkanes-macros = { workspace = true }
 alkanes-std-factory-support = { workspace = true }
 metashrew-support = { workspace = true }
 bitcoin = { workspace = true }
-secp256k1 = { workspace = true }
 anyhow = { workspace = true }
 hex = { workspace = true }
 

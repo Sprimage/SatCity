@@ -3,6 +3,7 @@ name = "sat-city-contracts"
 version = "0.1.0"
 edition = "2021"
 
+
 [lib]
 crate-type = ["cdylib", "rlib"]
 
@@ -21,12 +22,13 @@ protorune = { git = "https://github.com/kungfuflex/alkanes-rs" }
 alkanes = { git = "https://github.com/kungfuflex/alkanes-rs" }
 alkanes-std-factory-support = { git = "https://github.com/kungfuflex/alkanes-rs" }
 cairo-air-verifier-lite = { git = "https://github.com/Sprimage/stwo-alkanes", rev = "a323cd2d343c97b07117e1ae0103f868d86470f4" }
-
+stwo-cairo-serialize = { git = "https://github.com/Sprimage/stwo-alkanes", rev = "a323cd2d343c97b07117e1ae0103f868d86470f4" }
+stwo = { git = "https://github.com/starkware-libs/stwo", rev = "d9c929d", default-features = false }
+starknet-ff = "0.3.7"
 
 
 # Bitcoin & Crypto
-bitcoin = { version = "0.31.1", features = ["serde"] }
-secp256k1 = { version = "0.28.0", features = ["recovery", "global-context"] }
+bitcoin = { version = "0.32.4", features = ["rand"] }
 
 # Utilities
 anyhow = "1.0.75"
@@ -40,12 +42,12 @@ wasm-bindgen-test = "0.3.49"
 alkanes-runtime = { workspace = true }
 alkanes-support = { workspace = true }
 cairo-air-verifier-lite = { workspace = true }
+stwo-cairo-serialize = { workspace = true }
+stwo = { workspace = true }
 anyhow = { workspace = true }
 bitcoin = { workspace = true }
 hex = { workspace = true }
-starknet-ff = "0.3.7"
-stwo = { git = "https://github.com/starkware-libs/stwo", rev = "d9c929d", default-features = false }
-stwo-cairo-serialize = { path = "../stwo-alkanes/crates/cairo-serialize" }
+starknet-ff = { workspace = true }
 verifier = { path = "alkanes/verifier" }
 game-escrow = { path = "alkanes/game-escrow" }
 
@@ -56,3 +58,7 @@ protorune = { workspace = true, features = ["test-utils"] }
 wasm-bindgen = { workspace = true }
 wasm-bindgen-test = { workspace = true }
 hex_lit = { workspace = true }
+
+[features]
+default = []
+test = []

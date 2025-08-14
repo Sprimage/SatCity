@@ -2159,6 +2159,7 @@ dependencies = [
  "anyhow",
  "bitcoin 0.32.7",
  "cairo-air-verifier-lite",
+ "flate2",
  "game-escrow",
  "hex",
  "hex_lit",

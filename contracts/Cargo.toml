@@ -62,3 +62,8 @@ hex_lit = { workspace = true }
 [features]
 default = []
 test = []
+
+[build-dependencies]
+anyhow = "1.0.90"
+flate2 = "1.0.34"
+hex = "0.4.3"

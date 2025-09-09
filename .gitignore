@@ -1,2 +1,11 @@
 contracts/target
-reference
+sequencer/target
+circuits/target
+references
+circuits/program_inputs.json
+sequencer/example_proof.json
+sequencer/private_inputs.json
+sequencer/proof_old.json
+sequencer/trace
+sequencer/public_inputs.json
+.DS_Store
